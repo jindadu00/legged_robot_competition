@@ -1,4 +1,5 @@
 # 强化学习训练GO2翻越多种地形
+【基于Isaac Gym的四足机器狗强化学习控制翻越梅花桩】 https://www.bilibili.com/video/BV1qQ4VefEa6/?share_source=copy_web&vd_source=ac75510eaafc766062a04f7add43c2f7
 
 ## 规则
 
