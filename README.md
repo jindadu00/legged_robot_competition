@@ -40,20 +40,6 @@ git clone https://github.com/jindadu00/legged_robot_competition
 
 这里我们要开始安装isaacgym，作为本项目的仿真环境。
 
-原文档有些小错误，以下是原比赛文档中的内容
-
-```sh
-conda create -n legged_robot_parkour python=3.8
-conda activate legged_robot_parkour
-cd rsl_rl && git checkout v1.0.2 && pip install -e .
-cd ..
-cd isaacgym/python && pip install -e .
-cd ..
-cd legged_gym && pip install -e .
-```
-
-这里需要一点点linux知识(虽然不多)，或者求助于GPT，修改后依次运行下面的代码，最后回到根文件夹目录
-
 ```sh
 conda create -n legged_robot_parkour python=3.8
 conda activate legged_robot_parkour
@@ -267,29 +253,11 @@ $$
 
 在梅花桩区域，狗踩在梅花桩区域是不稳定的，根据我训练过程中的观察有时候狗还会通过蹬梅花桩的边缘获得一个不错的跳跃速度，但这么做只能跳一下。因此脚踩在梅花桩边缘的行为应该被惩罚，我的代码如下，其中edge_mask是对地形高度边缘检测得到的边缘掩码。
 
-```python
-def _reward_feet_edge(self):
-    foot_pos_xy=self.rigid_body_states[:, self.feet_indices, :2]
-
-    indices = (foot_pos_xy / 0.25).long()  # (num_envs, 4, 2)
-
-    indices[:, :, 0] = indices[:, :, 0].clamp(0, self.height_samples.shape[0] - 1) 
-    indices[:, :, 1] = indices[:, :, 1].clamp(0, self.height_samples.shape[1] - 1) 
-
-    feet_at_edge = self.edge_mask[indices[:, :, 0], indices[:, :, 1]]
-
-    self.feet_at_edge = self.contact_filt & feet_at_edge
-    rew = torch.sum(self.feet_at_edge, dim=-1)
-    return rew
-```
-
 ### Observation
 
 #### measured_heights
 
 为了让狗更好地通过梅花桩区域，将measured_points_x向前延伸，使其能够观察到对岸的台阶而不是全部都是深渊，可以适当减少对背后的观察。
-
-
 
 #### delta_yaw
 
